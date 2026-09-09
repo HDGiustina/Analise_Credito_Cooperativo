@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreClienteRequest;
+use App\Http\Requests\UpdateClienteRequest;
+use App\Models\Cliente;
 use Illuminate\Http\Request;
 
 class ClienteController extends Controller
@@ -15,8 +18,9 @@ class ClienteController extends Controller
      */
     public function index()
     {
-        // TODO: Retornar a lista paginada de clientes.
-        return response()->json(['message' => 'Not implemented'], 501);
+        return response()->json(
+            Cliente::orderBy('id', 'desc')->paginate(15)
+        );
     }
 
     /**
@@ -31,13 +35,14 @@ class ClienteController extends Controller
      *  - telefone: opcional, string
      *  - renda_mensal: obrigatório, numérico, mínimo de 0
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Http\Requests\StoreClienteRequest  $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function store(Request $request)
+    public function store(StoreClienteRequest $request)
     {
-        // TODO: Validar os dados de entrada e persistir o cliente no banco.
-        return response()->json(['message' => 'Not implemented'], 501);
+        $cliente = Cliente::create($request->validated());
+
+        return response()->json($cliente, 201);
     }
 
     /**
@@ -50,8 +55,7 @@ class ClienteController extends Controller
      */
     public function show($id)
     {
-        // TODO: Buscar e retornar o cliente pelo ID (retornar 404 se não encontrado).
-        return response()->json(['message' => 'Not implemented'], 501);
+        return response()->json(Cliente::findOrFail($id));
     }
 
     /**
@@ -59,14 +63,16 @@ class ClienteController extends Controller
      *
      * PUT /api/clientes/{id}
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Http\Requests\UpdateClienteRequest  $request
      * @param  int  $id
      * @return \Illuminate\Http\JsonResponse
      */
-    public function update(Request $request, $id)
+    public function update(UpdateClienteRequest $request, $id)
     {
-        // TODO: Validar os dados e atualizar o cliente (retornar 404 se não encontrado).
-        return response()->json(['message' => 'Not implemented'], 501);
+        $cliente = Cliente::findOrFail($id);
+        $cliente->update($request->validated());
+
+        return response()->json($cliente);
     }
 
     /**
@@ -79,7 +85,8 @@ class ClienteController extends Controller
      */
     public function destroy($id)
     {
-        // TODO: Remover o cliente (retornar 404 se não encontrado, 204 No Content se removido).
-        return response()->json(['message' => 'Not implemented'], 501);
+        Cliente::findOrFail($id)->delete();
+
+        return response()->noContent();
     }
 }

@@ -49,6 +49,11 @@ class AnaliseCreditoController extends Controller
             ]
         );
 
+        $cliente->update([
+            'nome' => $dados['nome'],
+            'renda_mensal' => $dados['renda_mensal'],
+        ]);
+
         $analise = AnaliseCredito::create([
             'cliente_id' => $cliente->id,
             'cpf' => $dados['cpf'],

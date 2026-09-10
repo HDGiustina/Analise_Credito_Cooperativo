@@ -97,14 +97,14 @@
                     <!-- CPF -->
                     <div>
                         <label for="cpf" class="block text-sm font-medium text-slate-400 mb-2">CPF</label>
-                        <input type="text" id="cpf" name="cpf" required placeholder="000.000.000-00"
+                        <input type="text" id="cpf" name="cpf" required placeholder="000.000.000-00" maxlength="14" inputmode="numeric"
                             class="w-full bg-slate-950/50 border border-panelBorder rounded-xl px-4 py-3 text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all">
                     </div>
 
                     <!-- Renda Mensal -->
                     <div>
                         <label for="renda_mensal" class="block text-sm font-medium text-slate-400 mb-2">Renda Mensal (R$)</label>
-                        <input type="number" step="0.01" id="renda_mensal" name="renda_mensal" required placeholder="Ex: 3500.00"
+                        <input type="text" id="renda_mensal" name="renda_mensal" required placeholder="Ex: 3.500,00" inputmode="decimal"
                             class="w-full bg-slate-950/50 border border-panelBorder rounded-xl px-4 py-3 text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all">
                     </div>
                 </div>
@@ -125,7 +125,7 @@
                     <!-- Valor Solicitado -->
                     <div>
                         <label for="valor_solicitado" class="block text-sm font-medium text-slate-400 mb-2">Valor Requerido (R$)</label>
-                        <input type="number" step="0.01" id="valor_solicitado" name="valor_solicitado" required placeholder="Ex: 15000.00"
+                        <input type="text" id="valor_solicitado" name="valor_solicitado" required placeholder="Ex: 15.000,00" inputmode="decimal"
                             class="w-full bg-slate-950/50 border border-panelBorder rounded-xl px-4 py-3 text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all">
                     </div>
                 </div>
@@ -143,7 +143,7 @@
         </section>
 
         <!-- Resultados e Contratação -->
-        <section class="lg:col-span-5 space-y-6">
+        <section class="lg:col-span-5">
             
             <!-- Card de Resultado Inicial (Placeholder) -->
             <div id="resultado-vazio" class="glass-panel rounded-3xl p-8 text-center border-dashed border-2 border-panelBorder flex flex-col items-center justify-center py-20">
@@ -265,11 +265,150 @@
       -->
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            // O candidato deve preencher a integração aqui.
-
             const form = document.getElementById('form-analise');
+            const btnSolicitar = document.getElementById('btn-solicitar');
+            const txtSolicitar = document.getElementById('txt-solicitar');
+            const spinner = document.getElementById('loading-spinner');
 
-            // TODO: Adicionar Event Listeners e requisições para a API Laravel.
+            const cardVazio = document.getElementById('resultado-vazio');
+            const cardResultado = document.getElementById('resultado-analise');
+            const badge = document.getElementById('status-indicator-badge');
+            const blocoAprovado = document.getElementById('dados-aprovado');
+            const blocoReprovado = document.getElementById('dados-reprovado');
+            const containerContratacao = document.getElementById('container-contratacao');
+            const btnContratar = document.getElementById('btn-contratar');
+            const txtContratar = document.getElementById('txt-contratar');
+            const cpfInput = document.getElementById('cpf');
+            const rendaInput = document.getElementById('renda_mensal');
+            const valorInput = document.getElementById('valor_solicitado');
+
+            // Máscara simples de CPF: 000.000.000-00
+            cpfInput.addEventListener('input', () => {
+                const digitos = cpfInput.value.replace(/\D/g, '').slice(0, 11);
+                const partes = [];
+                if (digitos.length > 0) partes.push(digitos.slice(0, 3));
+                if (digitos.length > 3) partes.push(digitos.slice(3, 6));
+                if (digitos.length > 6) partes.push(digitos.slice(6, 9));
+                let formatado = partes.join('.');
+                if (digitos.length > 9) formatado += `-${digitos.slice(9)}`;
+                cpfInput.value = formatado;
+            });
+
+            // Permite só número, ponto e vírgula nos campos de moeda
+            [rendaInput, valorInput].forEach((input) => {
+                input.addEventListener('input', () => {
+                    input.value = input.value.replace(/[^0-9.,]/g, '');
+                });
+            });
+
+            // "3.500,00" -> 3500.00 | "3500.00" -> 3500.00
+            const parseMoedaBR = (valor) => {
+                if (typeof valor === 'number') return valor;
+                const texto = String(valor ?? '').trim();
+                if (texto === '') return NaN;
+                const semMilhar = texto.replace(/\./g, '').replace(',', '.');
+                return Number(semMilhar);
+            };
+
+            const setLoading = (loading) => {
+                btnSolicitar.disabled = loading;
+                spinner.classList.toggle('hidden', !loading);
+                txtSolicitar.textContent = loading ? 'Analisando...' : 'Solicitar Análise de Crédito';
+            };
+
+            const mostrarResultado = (analise) => {
+                cardVazio.classList.add('hidden');
+                cardResultado.classList.remove('hidden');
+
+                document.getElementById('res-nome').textContent = analise.nome ?? '-';
+                document.getElementById('res-cpf').textContent = analise.cpf ?? '-';
+                document.getElementById('res-score').textContent = analise.score ?? '-';
+
+                const statusEl = document.getElementById('res-status');
+                statusEl.textContent = (analise.status ?? '-').toUpperCase();
+
+                const aprovado = analise.status === 'aprovado';
+
+                badge.innerHTML = aprovado
+                    ? '<span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">APROVADO</span>'
+                    : '<span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-red-500/10 text-red-400 border border-red-500/20">REPROVADO</span>';
+
+                statusEl.className = aprovado ? 'font-bold text-emerald-400' : 'font-bold text-red-400';
+
+                blocoAprovado.classList.toggle('hidden', !aprovado);
+                blocoReprovado.classList.toggle('hidden', aprovado);
+                containerContratacao.classList.toggle('hidden', !aprovado);
+
+                if (aprovado) {
+                    const taxa = Number(analise.taxa_juros ?? 0).toFixed(1).replace('.', ',');
+                    const parcela = Number(analise.valor_parcela ?? 0).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+                    document.getElementById('res-taxa').textContent = `${taxa}% a.m.`;
+                    document.getElementById('res-parcela').textContent = `R$ ${parcela}`;
+
+                    const renda = Number(analise.renda_mensal ?? 0);
+                    const valorParcela = Number(analise.valor_parcela ?? 0);
+                    const comprometimento = renda > 0 ? ((valorParcela / renda) * 100).toFixed(1).replace('.', ',') : '0,0';
+                    document.getElementById('res-comprometimento').textContent = `${comprometimento}% da renda`;
+
+                    txtContratar.textContent = 'Ver Simulação e Contratar';
+                    btnContratar.onclick = () => {
+                        window.location.href = `/simulacao/${analise.id}`;
+                    };
+                } else {
+                    document.getElementById('res-motivo').textContent = analise.motivo_rejeicao ?? 'Sem motivo informado.';
+                }
+            };
+
+            const mostrarErroValidacao = (errors) => {
+                const mensagens = Object.values(errors ?? {}).flat().join(' ');
+                cardVazio.classList.add('hidden');
+                cardResultado.classList.remove('hidden');
+                blocoAprovado.classList.add('hidden');
+                containerContratacao.classList.add('hidden');
+                blocoReprovado.classList.remove('hidden');
+                document.getElementById('res-nome').textContent = '-';
+                document.getElementById('res-cpf').textContent = '-';
+                document.getElementById('res-score').textContent = '-';
+                document.getElementById('res-status').textContent = 'ERRO';
+                badge.innerHTML = '<span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-red-500/10 text-red-400 border border-red-500/20">ERRO</span>';
+                document.getElementById('res-motivo').textContent = mensagens || 'Verifique os dados e tente novamente.';
+            };
+
+            form.addEventListener('submit', async (event) => {
+                event.preventDefault();
+                setLoading(true);
+
+                const payload = {
+                    nome: document.getElementById('nome').value,
+                    cpf: document.getElementById('cpf').value.replace(/\D/g, ''),
+                    renda_mensal: parseMoedaBR(document.getElementById('renda_mensal').value),
+                    tipo_credito: document.getElementById('tipo_credito').value,
+                    valor_solicitado: parseMoedaBR(document.getElementById('valor_solicitado').value),
+                };
+
+                try {
+                    const response = await fetch('/api/analise-credito', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+                        body: JSON.stringify(payload),
+                    });
+
+                    const data = await response.json();
+
+                    if (response.status === 422) {
+                        mostrarErroValidacao(data.errors);
+                        return;
+                    }
+
+                    // 201 aprovado/reprovado | 503 bureau indisponível (vem com { analise })
+                    const analise = data.analise ?? data;
+                    mostrarResultado(analise);
+                } catch (error) {
+                    mostrarErroValidacao({ geral: ['Falha de conexão. Tente novamente.'] });
+                } finally {
+                    setLoading(false);
+                }
+            });
         });
     </script>
 </body>

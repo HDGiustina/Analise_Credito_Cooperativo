@@ -119,7 +119,20 @@ class AnaliseCreditoController extends Controller
      */
     public function contratar($id)
     {
-        // TODO: Implementar validação da análise e confirmação da contratação.
-        return response()->json(['message' => 'Not implemented'], 501);
+        $analise = AnaliseCredito::findOrFail($id);
+
+        if ($analise->status !== StatusAnalise::APROVADO) {
+            return response()->json([
+                'message' => 'Somente análises aprovadas podem ser contratadas.',
+                'analise' => $analise,
+            ], 422);
+        }
+
+        $analise->update(['status' => StatusAnalise::CONTRATADO]);
+
+        return response()->json([
+            'message' => 'Crédito contratado com sucesso.',
+            'analise' => $analise->fresh(),
+        ]);
     }
 }

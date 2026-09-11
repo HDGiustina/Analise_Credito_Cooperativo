@@ -2,8 +2,6 @@
 
 namespace Tests\Feature;
 
-use App\Models\AnaliseCredito;
-use App\Models\Cliente;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Http;
 use Tests\TestCase;

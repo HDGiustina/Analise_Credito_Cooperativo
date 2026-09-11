@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
 class UpdateClienteRequest extends FormRequest
@@ -17,7 +18,7 @@ class UpdateClienteRequest extends FormRequest
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
+     * @return array<string, ValidationRule|array<mixed>|string>
      */
     public function rules(): array
     {
@@ -25,8 +26,8 @@ class UpdateClienteRequest extends FormRequest
 
         return [
             'nome' => ['sometimes', 'required', 'string', 'max:255'],
-            'cpf' => ['sometimes', 'required', 'digits:11', 'unique:clientes,cpf,' . $clienteId],
-            'email' => ['sometimes', 'required', 'email', 'max:255', 'unique:clientes,email,' . $clienteId],
+            'cpf' => ['sometimes', 'required', 'digits:11', 'unique:clientes,cpf,'.$clienteId],
+            'email' => ['sometimes', 'required', 'email', 'max:255', 'unique:clientes,email,'.$clienteId],
             'telefone' => ['sometimes', 'nullable', 'string', 'max:20'],
             'renda_mensal' => ['sometimes', 'required', 'numeric', 'min:0'],
         ];

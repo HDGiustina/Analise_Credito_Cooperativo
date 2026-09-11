@@ -9,7 +9,7 @@ use App\Models\AnaliseCredito;
 use App\Models\Cliente;
 use App\Services\AnaliseCreditoService;
 use App\Services\BureauService;
-use Illuminate\Http\Request;
+use Illuminate\Http\JsonResponse;
 
 class AnaliseCreditoController extends Controller
 {
@@ -33,8 +33,7 @@ class AnaliseCreditoController extends Controller
      *  5. Aplicar as regras de negócio (renda mínima, faixas de score, comprometimento de renda).
      *  6. Atualizar e retornar a análise persistida com o resultado final.
      *
-     * @param  \App\Http\Requests\SolicitarAnaliseRequest  $request
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function solicitar(SolicitarAnaliseRequest $request, BureauService $bureau, AnaliseCreditoService $avaliador)
     {
@@ -120,7 +119,7 @@ class AnaliseCreditoController extends Controller
      *    para a fila. O Job ficará responsável por finalizar e atualizar para 'contratado'.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function contratar($id)
     {

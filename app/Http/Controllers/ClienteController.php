@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreClienteRequest;
 use App\Http\Requests\UpdateClienteRequest;
 use App\Models\Cliente;
-use Illuminate\Http\Request;
+use Illuminate\Http\JsonResponse;
 
 class ClienteController extends Controller
 {
@@ -14,7 +14,7 @@ class ClienteController extends Controller
      *
      * GET /api/clientes
      *
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function index()
     {
@@ -35,8 +35,7 @@ class ClienteController extends Controller
      *  - telefone: opcional, string
      *  - renda_mensal: obrigatório, numérico, mínimo de 0
      *
-     * @param  \App\Http\Requests\StoreClienteRequest  $request
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function store(StoreClienteRequest $request)
     {
@@ -51,7 +50,7 @@ class ClienteController extends Controller
      * GET /api/clientes/{id}
      *
      * @param  int  $id
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function show($id)
     {
@@ -63,9 +62,8 @@ class ClienteController extends Controller
      *
      * PUT /api/clientes/{id}
      *
-     * @param  \App\Http\Requests\UpdateClienteRequest  $request
      * @param  int  $id
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function update(UpdateClienteRequest $request, $id)
     {
@@ -81,7 +79,7 @@ class ClienteController extends Controller
      * DELETE /api/clientes/{id}
      *
      * @param  int  $id
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function destroy($id)
     {

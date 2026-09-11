@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Enums\StatusAnalise;
 use App\Exceptions\BureauIndisponivelException;
 use App\Http\Requests\SolicitarAnaliseRequest;
+use App\Jobs\ProcessarContratacaoJob;
 use App\Models\AnaliseCredito;
 use App\Models\Cliente;
 use App\Services\AnaliseCreditoService;
@@ -108,15 +109,11 @@ class AnaliseCreditoController extends Controller
      *
      * POST /api/analise-credito/{id}/contratar
      *
-     * Fluxo esperado:
+     * Fluxo:
      *  1. Buscar a análise pelo ID (retornar 404 se não encontrada).
      *  2. Verificar se o status é 'aprovado' (retornar 422 se não for).
-     *  3. Atualizar o status para 'contratado'.
-     *  4. Retornar confirmação de sucesso.
-     *
-     * ⭐ DIFERENCIAL OPCIONAL: Em vez de atualizar diretamente para 'contratado',
-     *    atualize para 'processando_contratacao' e dispare o Job ProcessarContratacaoJob
-     *    para a fila. O Job ficará responsável por finalizar e atualizar para 'contratado'.
+     *  3. Atualizar o status para 'processando_contratacao' e despachar o Job.
+     *  4. O Job finaliza para 'contratado' em background.
      *
      * @param  int  $id
      * @return JsonResponse
@@ -132,10 +129,12 @@ class AnaliseCreditoController extends Controller
             ], 422);
         }
 
-        $analise->update(['status' => StatusAnalise::CONTRATADO]);
+        $analise->update(['status' => StatusAnalise::PROCESSANDO_CONTRATACAO]);
+
+        ProcessarContratacaoJob::dispatch($analise->id);
 
         return response()->json([
-            'message' => 'Crédito contratado com sucesso.',
+            'message' => 'Contratação enviada para processamento.',
             'analise' => $analise->fresh(),
         ]);
     }

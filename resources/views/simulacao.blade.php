@@ -49,15 +49,21 @@
                 </div>
                 <div>
                     <h1 class="text-xl font-bold tracking-tight bg-gradient-to-r from-emerald-400 to-green-300 bg-clip-text text-transparent">Coop0156</h1>
-                    <p class="text-xs text-slate-400">Desafio Análise de Crédito</p>
+                    <p class="text-xs text-slate-400">@lang('site.desafio')</p>
                 </div>
             </a>
-            <a href="/" class="text-sm text-slate-400 hover:text-emerald-400 transition-colors flex items-center gap-1">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-                </svg>
-                Nova Análise
-            </a>
+            <div class="flex items-center gap-2">
+                <select id="locale-switch" class="bg-slate-950/50 border border-panelBorder rounded-lg px-2 py-1 text-xs text-slate-300 focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                    <option value="pt_BR" {{ app()->getLocale() === 'pt_BR' ? 'selected' : '' }}>PT-BR</option>
+                    <option value="en" {{ app()->getLocale() === 'en' ? 'selected' : '' }}>EN</option>
+                </select>
+                <a href="/" class="text-sm text-slate-400 hover:text-emerald-400 transition-colors flex items-center gap-1">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                    </svg>
+                    @lang('site.nova_analise')
+                </a>
+            </div>
         </div>
     </header>
 
@@ -66,7 +72,7 @@
 
         <!-- Breadcrumb -->
         <nav class="flex items-center gap-2 text-sm text-slate-500 mb-8">
-            <a href="/" class="hover:text-slate-300 transition-colors">Análise</a>
+            <a href="/" class="hover:text-slate-300 transition-colors">@lang('site.analise')</a>
             <span>/</span>
             <span class="text-slate-300">Simulação #{{ $analise->id }}</span>
         </nav>
@@ -74,12 +80,12 @@
         <!-- Cabeçalho da Simulação -->
         <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-8">
             <div>
-                <h2 class="text-3xl font-bold text-white">Simulação de Crédito</h2>
-                <p class="text-slate-400 mt-1">Revise as condições antes de confirmar a contratação.</p>
+                <h2 class="text-3xl font-bold text-white">@lang('site.simulacao')</h2>
+                <p class="text-slate-400 mt-1">@lang('site.simulacao_desc')</p>
             </div>
             <span class="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
                 <span class="h-2 w-2 rounded-full bg-emerald-400 animate-pulse"></span>
-                Pré-aprovado
+                @lang('site.pre_aprovado')
             </span>
         </div>
 
@@ -87,22 +93,22 @@
 
             <!-- Dados do Proponente -->
             <div class="glass-panel rounded-2xl p-6">
-                <h3 class="text-xs font-semibold uppercase tracking-widest text-slate-500 mb-4">Proponente</h3>
+                <h3 class="text-xs font-semibold uppercase tracking-widest text-slate-500 mb-4">@lang('site.proponente_titulo')</h3>
                 <div class="space-y-3">
                     <div>
-                        <p class="text-xs text-slate-500">Nome</p>
+                        <p class="text-xs text-slate-500">@lang('site.nome')</p>
                         <p class="font-semibold text-slate-100">{{ $analise->nome }}</p>
                     </div>
                     <div>
-                        <p class="text-xs text-slate-500">CPF</p>
+                        <p class="text-xs text-slate-500">@lang('site.cpf')</p>
                         <p class="font-medium text-slate-200 font-mono">{{ $analise->cpf }}</p>
                     </div>
                     <div>
-                        <p class="text-xs text-slate-500">Renda Mensal</p>
+                        <p class="text-xs text-slate-500">@lang('site.renda')</p>
                         <p class="font-medium text-slate-200">R$ {{ number_format($analise->renda_mensal, 2, ',', '.') }}</p>
                     </div>
                     <div>
-                        <p class="text-xs text-slate-500">Tipo de Crédito</p>
+                        <p class="text-xs text-slate-500">@lang('site.tipo')</p>
                         <p class="font-medium text-slate-200 capitalize">{{ $analise->tipo_credito->value }}</p>
                     </div>
                 </div>
@@ -110,33 +116,33 @@
 
             <!-- Score e Aprovação -->
             <div class="glass-panel rounded-2xl p-6">
-                <h3 class="text-xs font-semibold uppercase tracking-widest text-slate-500 mb-4">Score de Crédito</h3>
+                <h3 class="text-xs font-semibold uppercase tracking-widest text-slate-500 mb-4">@lang('site.score')</h3>
                 <div class="flex flex-col items-center justify-center h-32">
                     <p class="text-6xl font-bold bg-gradient-to-b from-emerald-300 to-emerald-500 bg-clip-text text-transparent">
                         {{ $analise->score }}
                     </p>
-                    <p class="text-slate-400 text-sm mt-2">Pontuação Obtida</p>
+                    <p class="text-slate-400 text-sm mt-2">@lang('site.pontuacao')</p>
                 </div>
                 <div class="mt-4 pt-4 border-t border-panelBorder">
-                    <p class="text-xs text-slate-500">Taxa de Juros Aplicada</p>
+                    <p class="text-xs text-slate-500">@lang('site.taxa')</p>
                     <p class="text-xl font-bold text-emerald-400 mt-1">{{ number_format($analise->taxa_juros, 1, ',', '.') }}% a.m.</p>
                 </div>
             </div>
 
             <!-- Condições Financeiras -->
             <div class="glass-panel rounded-2xl p-6">
-                <h3 class="text-xs font-semibold uppercase tracking-widest text-slate-500 mb-4">Condições</h3>
+                <h3 class="text-xs font-semibold uppercase tracking-widest text-slate-500 mb-4">@lang('site.condicoes')</h3>
                 <div class="space-y-3">
                     <div>
-                        <p class="text-xs text-slate-500">Valor Solicitado</p>
+                        <p class="text-xs text-slate-500">@lang('site.valor_solicitado')</p>
                         <p class="font-semibold text-slate-100 text-lg">R$ {{ number_format($analise->valor_solicitado, 2, ',', '.') }}</p>
                     </div>
                     <div>
-                        <p class="text-xs text-slate-500">Parcelas</p>
-                        <p class="font-medium text-slate-200">12x fixas</p>
+                        <p class="text-xs text-slate-500">@lang('site.parcelas')</p>
+                        <p class="font-medium text-slate-200">@lang('site.parcelas_fixas')</p>
                     </div>
                     <div class="pt-3 border-t border-panelBorder">
-                        <p class="text-xs text-slate-500">Valor Estimado da Parcela</p>
+                        <p class="text-xs text-slate-500">@lang('site.valor_parcela')</p>
                         <p class="text-2xl font-bold text-white mt-1">
                             R$ {{ number_format($analise->valor_parcela, 2, ',', '.') }}
                         </p>
@@ -156,7 +162,7 @@
                 </svg>
             </div>
             <div>
-                <p class="text-sm font-medium text-slate-200">Comprometimento de renda</p>
+                <p class="text-sm font-medium text-slate-200">@lang('site.comprometimento_titulo')</p>
                 <p class="text-xs text-slate-400 mt-0.5">
                     A parcela representa aproximadamente <span class="text-blue-400 font-semibold">{{ number_format($comprometimento, 1, ',', '.') }}%</span>
                     da sua renda mensal declarada (R$ {{ number_format($analise->renda_mensal, 2, ',', '.') }}).
@@ -173,18 +179,18 @@
                 </div>
             @endif
 
-            <h3 class="text-xl font-semibold text-white mb-2">Confirmar Contratação</h3>
+            <h3 class="text-xl font-semibold text-white mb-2">@lang('site.confirmar_titulo')</h3>
             <p class="text-slate-400 text-sm mb-8 max-w-md mx-auto">
-                Ao confirmar, você está simulando a solicitação formal de contratação deste crédito. Esta ação não pode ser desfeita.
+                @lang('site.confirmar_desc')
             </p>
 
             <div class="flex flex-col sm:flex-row gap-4 justify-center">
                 <a href="/" class="px-8 py-3.5 rounded-xl border border-panelBorder text-slate-400 hover:text-slate-200 hover:border-slate-500 transition-all font-medium text-sm">
-                    Cancelar
+                    @lang('site.cancelar')
                 </a>
                 <button id="btn-confirmar"
                     class="px-10 py-3.5 bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white font-semibold rounded-xl transition-all duration-200 shadow-lg shadow-indigo-500/20 flex items-center gap-2 justify-center">
-                    <span id="txt-confirmar">Confirmar Contratação</span>
+                    <span id="txt-confirmar">@lang('site.confirmar')</span>
                     <svg id="spinner-confirmar" class="animate-spin h-4 w-4 hidden" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                         <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                         <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
@@ -203,20 +209,20 @@
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                 </svg>
             </div>
-            <h3 class="text-2xl font-bold text-white mb-2">Contratação Enviada!</h3>
-            <p class="text-slate-400 text-sm mb-6">O crédito foi encaminhado para processamento em segundo plano. Você receberá uma confirmação em breve.</p>
+            <h3 class="text-2xl font-bold text-white mb-2">@lang('site.contratacao_enviada')</h3>
+            <p class="text-slate-400 text-sm mb-6">@lang('site.contratacao_desc')</p>
             <div class="bg-emerald-500/5 border border-emerald-500/10 rounded-xl p-3 mb-6 text-xs text-emerald-400 font-mono">
                 Status: <span id="modal-status">PROCESSANDO_CONTRATACAO</span>
             </div>
             <a href="/" class="inline-block px-8 py-3 bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 hover:bg-emerald-500/20 rounded-xl text-sm font-medium transition-all">
-                Iniciar Nova Simulação
+                @lang('site.nova_simulacao')
             </a>
         </div>
     </div>
 
     <!-- Footer -->
     <footer class="border-t border-panelBorder/40 py-6 text-center text-xs text-slate-600">
-        <p>&copy; 2026 Coop0156. Desafio Técnico Laravel.</p>
+        <p>@lang('site.footer_sim')</p>
     </footer>
 
     <!--
@@ -236,16 +242,29 @@
             const spinner = document.getElementById('spinner-confirmar');
             const modalSucesso = document.getElementById('modal-sucesso');
             const analiseId = {{ $analise->id }};
+            const STR = {
+                processando: @json(__('site.processando')),
+                confirmar: @json(__('site.confirmar')),
+                erroContratar: @json(__('site.erro_generico')),
+                erroConexao: @json(__('site.erro_conexao')),
+            };
+            const currentLocale = () => localStorage.getItem('locale') || @json(app()->getLocale());
+
+            document.getElementById('locale-switch').addEventListener('change', (event) => {
+                const lang = event.target.value;
+                localStorage.setItem('locale', lang);
+                window.location.href = `/locale/${lang}`;
+            });
 
             btnConfirmar.addEventListener('click', async () => {
                 btnConfirmar.disabled = true;
                 spinner.classList.remove('hidden');
-                txtConfirmar.textContent = 'Processando...';
+                txtConfirmar.textContent = STR.processando;
 
                 try {
                     const response = await fetch(`/api/analise-credito/${analiseId}/contratar`, {
                         method: 'POST',
-                        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+                        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json', 'X-Locale': currentLocale() },
                     });
 
                     if (response.ok) {
@@ -257,13 +276,13 @@
                     }
 
                     const data = await response.json().catch(() => ({}));
-                    alert(data.message ?? 'Não foi possível concluir a contratação. Tente novamente.');
+                    alert(data.message ?? STR.erroContratar);
                 } catch (error) {
-                    alert('Falha de conexão. Tente novamente.');
+                    alert(STR.erroConexao);
                 } finally {
                     btnConfirmar.disabled = false;
                     spinner.classList.add('hidden');
-                    txtConfirmar.textContent = 'Confirmar Contratação';
+                    txtConfirmar.textContent = STR.confirmar;
                 }
             });
         });

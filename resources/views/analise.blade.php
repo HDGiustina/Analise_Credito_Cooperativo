@@ -62,12 +62,16 @@
                 </div>
                 <div>
                     <h1 class="text-xl font-bold tracking-tight bg-gradient-to-r from-emerald-400 to-green-300 bg-clip-text text-transparent">Coop0156</h1>
-                    <p class="text-xs text-slate-400">Desafio Análise de Crédito</p>
+                    <p class="text-xs text-slate-400">@lang('site.desafio')</p>
                 </div>
             </div>
             <div class="flex items-center gap-2">
+                <select id="locale-switch" class="bg-slate-950/50 border border-panelBorder rounded-lg px-2 py-1 text-xs text-slate-300 focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                    <option value="pt_BR" {{ app()->getLocale() === 'pt_BR' ? 'selected' : '' }}>PT-BR</option>
+                    <option value="en" {{ app()->getLocale() === 'en' ? 'selected' : '' }}>EN</option>
+                </select>
                 <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
-                    Ambiente de Testes
+                    @lang('site.ambiente_testes')
                 </span>
             </div>
         </div>
@@ -82,29 +86,29 @@
             
             <h2 class="text-2xl font-semibold mb-6 flex items-center gap-2">
                 <span class="bg-emerald-500/10 text-emerald-400 p-2 rounded-lg text-sm">01</span>
-                Nova Solicitação de Crédito
+                @lang('site.nova_solicitacao')
             </h2>
             
             <form id="form-analise" class="space-y-6">
                 <!-- Nome Completo -->
                 <div>
-                    <label for="nome" class="block text-sm font-medium text-slate-400 mb-2">Nome Completo</label>
-                    <input type="text" id="nome" name="nome" required placeholder="Digite o nome completo do proponente"
+                    <label for="nome" class="block text-sm font-medium text-slate-400 mb-2">@lang('site.nome_completo')</label>
+                    <input type="text" id="nome" name="nome" required placeholder="@lang('site.nome_placeholder')"
                         class="w-full bg-slate-950/50 border border-panelBorder rounded-xl px-4 py-3 text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all">
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <!-- CPF -->
                     <div>
-                        <label for="cpf" class="block text-sm font-medium text-slate-400 mb-2">CPF</label>
+                        <label for="cpf" class="block text-sm font-medium text-slate-400 mb-2">@lang('site.cpf')</label>
                         <input type="text" id="cpf" name="cpf" required placeholder="000.000.000-00" maxlength="14" inputmode="numeric"
                             class="w-full bg-slate-950/50 border border-panelBorder rounded-xl px-4 py-3 text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all">
                     </div>
 
                     <!-- Renda Mensal -->
                     <div>
-                        <label for="renda_mensal" class="block text-sm font-medium text-slate-400 mb-2">Renda Mensal (R$)</label>
-                        <input type="text" id="renda_mensal" name="renda_mensal" required placeholder="Ex: 3.500,00" inputmode="decimal"
+                        <label for="renda_mensal" class="block text-sm font-medium text-slate-400 mb-2">@lang('site.renda_mensal')</label>
+                        <input type="text" id="renda_mensal" name="renda_mensal" required placeholder="@lang('site.renda_placeholder')" inputmode="decimal"
                             class="w-full bg-slate-950/50 border border-panelBorder rounded-xl px-4 py-3 text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all">
                     </div>
                 </div>
@@ -112,20 +116,20 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <!-- Tipo de Crédito -->
                     <div>
-                        <label for="tipo_credito" class="block text-sm font-medium text-slate-400 mb-2">Tipo de Crédito</label>
+                        <label for="tipo_credito" class="block text-sm font-medium text-slate-400 mb-2">@lang('site.tipo_credito')</label>
                         <select id="tipo_credito" name="tipo_credito" required
                             class="w-full bg-slate-950/50 border border-panelBorder rounded-xl px-4 py-3 text-slate-300 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all">
-                            <option value="" disabled selected>Selecione uma opção</option>
-                            <option value="pessoal">Crédito Pessoal</option>
-                            <option value="imobiliario">Crédito Imobiliário</option>
-                            <option value="automotivo">Crédito Automotivo</option>
+                            <option value="" disabled selected>@lang('site.tipo_selecione')</option>
+                            <option value="pessoal">@lang('site.tipo_pessoal')</option>
+                            <option value="imobiliario">@lang('site.tipo_imobiliario')</option>
+                            <option value="automotivo">@lang('site.tipo_automotivo')</option>
                         </select>
                     </div>
 
                     <!-- Valor Solicitado -->
                     <div>
-                        <label for="valor_solicitado" class="block text-sm font-medium text-slate-400 mb-2">Valor Requerido (R$)</label>
-                        <input type="text" id="valor_solicitado" name="valor_solicitado" required placeholder="Ex: 15.000,00" inputmode="decimal"
+                        <label for="valor_solicitado" class="block text-sm font-medium text-slate-400 mb-2">@lang('site.valor_requerido')</label>
+                        <input type="text" id="valor_solicitado" name="valor_solicitado" required placeholder="@lang('site.valor_placeholder')" inputmode="decimal"
                             class="w-full bg-slate-950/50 border border-panelBorder rounded-xl px-4 py-3 text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all">
                     </div>
                 </div>
@@ -133,7 +137,7 @@
                 <!-- Botão Enviar -->
                 <button type="submit" id="btn-solicitar"
                     class="w-full bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700 text-white font-semibold py-4 px-6 rounded-xl transition-all duration-200 transform active:scale-98 shadow-lg shadow-emerald-500/10 flex items-center justify-center gap-2">
-                    <span id="txt-solicitar">Solicitar Análise de Crédito</span>
+                    <span id="txt-solicitar">@lang('site.solicitar')</span>
                     <svg id="loading-spinner" class="animate-spin h-5 w-5 text-white hidden" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                         <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                         <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
@@ -150,8 +154,8 @@
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 text-slate-600 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                 </svg>
-                <h3 class="text-lg font-medium text-slate-400">Aguardando Solicitação</h3>
-                <p class="text-sm text-slate-500 mt-2 max-w-xs">Preencha os dados do formulário ao lado e solicite a análise para simular as condições.</p>
+                <h3 class="text-lg font-medium text-slate-400">@lang('site.aguardando')</h3>
+                <p class="text-sm text-slate-500 mt-2 max-w-xs">@lang('site.aguardando_desc')</p>
             </div>
 
             <!-- Card de Resultado da Análise -->
@@ -162,40 +166,40 @@
 
                 <h3 class="text-xl font-semibold mb-6 flex items-center gap-2">
                     <span class="bg-emerald-500/10 text-emerald-400 p-2 rounded-lg text-sm">02</span>
-                    Resultado da Análise
+                    @lang('site.resultado')
                 </h3>
 
                 <!-- Dados da Análise -->
                 <div class="space-y-4 divide-y divide-panelBorder">
                     <div class="flex justify-between pt-1">
-                        <span class="text-slate-400 text-sm">Proponente</span>
+                        <span class="text-slate-400 text-sm">@lang('site.proponente')</span>
                         <span id="res-nome" class="font-medium text-slate-100">-</span>
                     </div>
                     <div class="flex justify-between pt-4">
-                        <span class="text-slate-400 text-sm">CPF</span>
+                        <span class="text-slate-400 text-sm">@lang('site.cpf')</span>
                         <span id="res-cpf" class="font-medium text-slate-100">-</span>
                     </div>
                     <div class="flex justify-between pt-4">
-                        <span class="text-slate-400 text-sm">Score de Crédito</span>
+                        <span class="text-slate-400 text-sm">@lang('site.score')</span>
                         <span id="res-score" class="font-medium text-slate-100">-</span>
                     </div>
                     <div class="flex justify-between pt-4">
-                        <span class="text-slate-400 text-sm">Status da Análise</span>
+                        <span class="text-slate-400 text-sm">@lang('site.status')</span>
                         <span id="res-status" class="font-bold">-</span>
                     </div>
                     
                     <!-- Bloco Aprovado -->
                     <div id="dados-aprovado" class="space-y-4 pt-4 hidden">
                         <div class="flex justify-between">
-                            <span class="text-slate-400 text-sm">Taxa de Juros Aplicada</span>
+                            <span class="text-slate-400 text-sm">@lang('site.taxa')</span>
                             <span id="res-taxa" class="font-medium text-emerald-400">-</span>
                         </div>
                         <div class="flex justify-between">
-                            <span class="text-slate-400 text-sm">Parcela Mensal (12x)</span>
+                            <span class="text-slate-400 text-sm">@lang('site.parcela')</span>
                             <span id="res-parcela" class="font-bold text-lg text-emerald-400">-</span>
                         </div>
                         <div class="flex justify-between">
-                            <span class="text-slate-400 text-sm">Renda Comprometida</span>
+                            <span class="text-slate-400 text-sm">@lang('site.renda_comprometida')</span>
                             <span id="res-comprometimento" class="font-medium text-slate-100">-</span>
                         </div>
                     </div>
@@ -203,7 +207,7 @@
                     <!-- Bloco Reprovado -->
                     <div id="dados-reprovado" class="pt-4 hidden">
                         <div class="bg-red-500/10 border border-red-500/20 rounded-xl p-4 mt-2">
-                            <span class="text-red-400 text-xs block font-semibold uppercase tracking-wider mb-1">Motivo da Recusa</span>
+                            <span class="text-red-400 text-xs block font-semibold uppercase tracking-wider mb-1">@lang('site.motivo_recusa')</span>
                             <p id="res-motivo" class="text-slate-200 text-sm">-</p>
                         </div>
                     </div>
@@ -213,13 +217,13 @@
                 <div id="container-contratacao" class="mt-8 pt-6 border-t border-panelBorder hidden">
                     <button id="btn-contratar"
                         class="w-full bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white font-semibold py-4 px-6 rounded-xl transition-all duration-200 transform active:scale-98 shadow-lg shadow-indigo-500/10 flex items-center justify-center gap-2">
-                        <span id="txt-contratar">Confirmar Contratação do Crédito</span>
+                        <span id="txt-contratar">@lang('site.ver_simulacao')</span>
                         <svg id="loading-spinner-contratar" class="animate-spin h-5 w-5 text-white hidden" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                             <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                             <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                         </svg>
                     </button>
-                    <p class="text-center text-xs text-slate-500 mt-3">Ao clicar, a simulação será enviada para a fila de processamento da contratação.</p>
+                    <p class="text-center text-xs text-slate-500 mt-3">@lang('site.fila_info')</p>
                 </div>
             </div>
 
@@ -247,7 +251,7 @@
     <!-- Footer -->
     <footer class="border-t border-panelBorder/40 py-6 text-center text-xs text-slate-600">
         <div class="max-w-6xl mx-auto px-4">
-            <p>&copy; 2026 CoopCred. Todos os direitos reservados. Desafio Técnico Laravel.</p>
+            <p>@lang('site.footer')</p>
         </div>
     </footer>
 
@@ -310,10 +314,35 @@
                 return Number(semMilhar);
             };
 
+            const STR = {
+                analisando: @json(__('site.analisando')),
+                solicitar: @json(__('site.solicitar')),
+                aprovado: @json(__('site.pre_aprovado')),
+                reprovado: 'REPROVADO',
+                erro: @json(__('site.erro')),
+                erroGenerico: @json(__('site.erro_generico')),
+                erroConexao: @json(__('site.erro_conexao')),
+                semMotivo: @json(__('site.sem_motivo')),
+                verSimulacao: @json(__('site.ver_simulacao')),
+            };
+
+            const currentLocale = () => localStorage.getItem('locale') || @json(app()->getLocale());
+            const apiHeaders = () => ({
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+                'X-Locale': currentLocale(),
+            });
+
+            document.getElementById('locale-switch').addEventListener('change', (event) => {
+                const lang = event.target.value;
+                localStorage.setItem('locale', lang);
+                window.location.href = `/locale/${lang}`;
+            });
+
             const setLoading = (loading) => {
                 btnSolicitar.disabled = loading;
                 spinner.classList.toggle('hidden', !loading);
-                txtSolicitar.textContent = loading ? 'Analisando...' : 'Solicitar Análise de Crédito';
+                txtSolicitar.textContent = loading ? STR.analisando : STR.solicitar;
             };
 
             const mostrarResultado = (analise) => {
@@ -330,8 +359,8 @@
                 const aprovado = analise.status === 'aprovado';
 
                 badge.innerHTML = aprovado
-                    ? '<span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">APROVADO</span>'
-                    : '<span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-red-500/10 text-red-400 border border-red-500/20">REPROVADO</span>';
+                    ? `<span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">${STR.aprovado.toUpperCase()}</span>`
+                    : `<span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-red-500/10 text-red-400 border border-red-500/20">${STR.reprovado}</span>`;
 
                 statusEl.className = aprovado ? 'font-bold text-emerald-400' : 'font-bold text-red-400';
 
@@ -350,12 +379,12 @@
                     const comprometimento = renda > 0 ? ((valorParcela / renda) * 100).toFixed(1).replace('.', ',') : '0,0';
                     document.getElementById('res-comprometimento').textContent = `${comprometimento}% da renda`;
 
-                    txtContratar.textContent = 'Ver Simulação e Contratar';
+                    txtContratar.textContent = STR.verSimulacao;
                     btnContratar.onclick = () => {
                         window.location.href = `/simulacao/${analise.id}`;
                     };
                 } else {
-                    document.getElementById('res-motivo').textContent = analise.motivo_rejeicao ?? 'Sem motivo informado.';
+                    document.getElementById('res-motivo').textContent = analise.motivo_rejeicao ?? STR.semMotivo;
                 }
             };
 
@@ -369,9 +398,9 @@
                 document.getElementById('res-nome').textContent = '-';
                 document.getElementById('res-cpf').textContent = '-';
                 document.getElementById('res-score').textContent = '-';
-                document.getElementById('res-status').textContent = 'ERRO';
-                badge.innerHTML = '<span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-red-500/10 text-red-400 border border-red-500/20">ERRO</span>';
-                document.getElementById('res-motivo').textContent = mensagens || 'Verifique os dados e tente novamente.';
+                document.getElementById('res-status').textContent = STR.erro;
+                badge.innerHTML = `<span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-red-500/10 text-red-400 border border-red-500/20">${STR.erro}</span>`;
+                document.getElementById('res-motivo').textContent = mensagens || STR.erroGenerico;
             };
 
             form.addEventListener('submit', async (event) => {
@@ -389,7 +418,7 @@
                 try {
                     const response = await fetch('/api/analise-credito', {
                         method: 'POST',
-                        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+                        headers: apiHeaders(),
                         body: JSON.stringify(payload),
                     });
 
@@ -404,7 +433,7 @@
                     const analise = data.analise ?? data;
                     mostrarResultado(analise);
                 } catch (error) {
-                    mostrarErroValidacao({ geral: ['Falha de conexão. Tente novamente.'] });
+                    mostrarErroValidacao({ geral: [STR.erroConexao] });
                 } finally {
                     setLoading(false);
                 }

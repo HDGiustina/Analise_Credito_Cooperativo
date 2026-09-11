@@ -2,8 +2,10 @@
 
 namespace Tests\Feature;
 
+use App\Jobs\ProcessarContratacaoJob;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Queue;
 use Tests\TestCase;
 
 class AnaliseCreditoTest extends TestCase
@@ -136,5 +138,51 @@ class AnaliseCreditoTest extends TestCase
 
         $this->assertDatabaseHas('clientes', ['cpf' => '98765432109']);
         $this->assertNotNull($response->json('cliente_id'));
+    }
+
+    public function test_contratar_dispara_job_para_fila(): void
+    {
+        $this->fakeBureau(850);
+
+        $analiseId = $this->postJson('/api/analise-credito', $this->payload())->json('id');
+
+        Queue::fake();
+
+        $response = $this->postJson("/api/analise-credito/{$analiseId}/contratar");
+
+        $response->assertStatus(200)
+            ->assertJsonFragment(['status' => 'processando_contratacao']);
+
+        Queue::assertPushed(ProcessarContratacaoJob::class, function ($job) use ($analiseId) {
+            return $job->analiseId === $analiseId;
+        });
+
+        $this->assertDatabaseHas('analises_credito', [
+            'id' => $analiseId,
+            'status' => 'processando_contratacao',
+        ]);
+    }
+
+    public function test_job_finaliza_contratacao(): void
+    {
+        $this->fakeBureau(850);
+
+        $analiseId = $this->postJson('/api/analise-credito', $this->payload())->json('id');
+
+        Queue::fake();
+
+        $this->postJson("/api/analise-credito/{$analiseId}/contratar");
+
+        $this->assertDatabaseHas('analises_credito', [
+            'id' => $analiseId,
+            'status' => 'processando_contratacao',
+        ]);
+
+        (new ProcessarContratacaoJob($analiseId))->handle();
+
+        $this->assertDatabaseHas('analises_credito', [
+            'id' => $analiseId,
+            'status' => 'contratado',
+        ]);
     }
 }

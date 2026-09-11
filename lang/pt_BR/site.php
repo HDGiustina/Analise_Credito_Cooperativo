@@ -18,6 +18,7 @@ return [
     'valor_placeholder' => 'Ex: 15.000,00',
     'solicitar' => 'Solicitar Análise de Crédito',
     'analisando' => 'Analisando...',
+    'analisando_desc' => 'Buscando score e calculando as condições, aguarde...',
     'aguardando' => 'Aguardando Solicitação',
     'aguardando_desc' => 'Preencha os dados do formulário ao lado e solicite a análise para simular as condições.',
     'resultado' => 'Resultado da Análise',

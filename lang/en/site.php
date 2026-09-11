@@ -18,6 +18,7 @@ return [
     'valor_placeholder' => 'E.g.: 15,000.00',
     'solicitar' => 'Request Credit Analysis',
     'analisando' => 'Analyzing...',
+    'analisando_desc' => 'Fetching score and calculating conditions, please wait...',
     'aguardando' => 'Waiting for Request',
     'aguardando_desc' => 'Fill in the form and request the analysis to simulate the conditions.',
     'resultado' => 'Analysis Result',

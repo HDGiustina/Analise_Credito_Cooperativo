@@ -29,7 +29,7 @@ class BureauService
                 'error' => $e->getMessage(),
             ]);
 
-            throw new BureauIndisponivelException('Serviço de análise indisponível no momento. Tente novamente.', previous: $e);
+            throw new BureauIndisponivelException(__('analise.bureau_indisponivel'), previous: $e);
         }
 
         if ($response->failed()) {
@@ -39,7 +39,7 @@ class BureauService
                 'status' => $response->status(),
             ]);
 
-            throw new BureauIndisponivelException('Serviço de análise indisponível no momento. Tente novamente.');
+            throw new BureauIndisponivelException(__('analise.bureau_indisponivel'));
         }
 
         $score = $response->json('score');
@@ -51,7 +51,7 @@ class BureauService
                 'body' => $response->body(),
             ]);
 
-            throw new BureauIndisponivelException('Serviço de análise retornou resposta inválida. Tente novamente.');
+            throw new BureauIndisponivelException(__('analise.bureau_resposta_invalida'));
         }
 
         return (int) $score;

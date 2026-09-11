@@ -50,7 +50,7 @@ class ProcessarContratacaoJob implements ShouldQueue
 
         $analise->update(['status' => StatusAnalise::CONTRATADO]);
 
-        Log::info('Contratação de crédito processada com sucesso.', [
+        Log::info(__('analise.contratacao_processada'), [
             'analise_id' => $analise->id,
         ]);
     }

@@ -28,11 +28,11 @@ class AnaliseCreditoService
     public function avaliar(float $rendaMensal, int $score, float $valorSolicitado): array
     {
         if ($rendaMensal < self::RENDA_MINIMA) {
-            return $this->reprovado('Renda mínima insuficiente');
+            return $this->reprovado(__('analise.renda_minima'));
         }
 
         if ($score < self::SCORE_MINIMO) {
-            return $this->reprovado('Score de crédito muito baixo');
+            return $this->reprovado(__('analise.score_baixo'));
         }
 
         $taxa = $score >= self::SCORE_TAXA_REDUZIDA
@@ -45,7 +45,7 @@ class AnaliseCreditoService
             $limitePercentual = rtrim(rtrim(number_format(self::COMPROMETIMENTO_MAXIMO * 100, 1, '.', ''), '0'), '.');
 
             return $this->reprovado(
-                "Comprometimento de renda superior a {$limitePercentual}%"
+                __('analise.comprometimento', ['limite' => $limitePercentual])
             );
         }
 

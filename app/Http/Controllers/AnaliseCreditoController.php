@@ -67,7 +67,7 @@ class AnaliseCreditoController extends Controller
         if ((float) $dados['renda_mensal'] < AnaliseCreditoService::RENDA_MINIMA) {
             $analise->update([
                 'status' => StatusAnalise::REPROVADO,
-                'motivo_rejeicao' => 'Renda mínima insuficiente',
+                'motivo_rejeicao' => __('analise.renda_minima'),
             ]);
 
             return response()->json($analise->fresh(), 201);
@@ -78,11 +78,11 @@ class AnaliseCreditoController extends Controller
         } catch (BureauIndisponivelException $e) {
             $analise->update([
                 'status' => StatusAnalise::REPROVADO,
-                'motivo_rejeicao' => 'Serviço de análise indisponível no momento. Tente novamente.',
+                'motivo_rejeicao' => __('analise.bureau_indisponivel'),
             ]);
 
             return response()->json([
-                'message' => 'Serviço de análise indisponível no momento. Tente novamente.',
+                'message' => __('analise.bureau_indisponivel'),
                 'analise' => $analise->fresh(),
             ], 503);
         }
@@ -124,7 +124,7 @@ class AnaliseCreditoController extends Controller
 
         if ($analise->status !== StatusAnalise::APROVADO) {
             return response()->json([
-                'message' => 'Somente análises aprovadas podem ser contratadas.',
+                'message' => __('analise.somente_aprovadas'),
                 'analise' => $analise,
             ], 422);
         }
@@ -134,7 +134,7 @@ class AnaliseCreditoController extends Controller
         ProcessarContratacaoJob::dispatch($analise->id);
 
         return response()->json([
-            'message' => 'Contratação enviada para processamento.',
+            'message' => __('analise.contratacao_enviada'),
             'analise' => $analise->fresh(),
         ]);
     }

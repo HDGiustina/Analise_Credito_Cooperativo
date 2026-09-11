@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Jobs\ProcessarContratacaoJob;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Queue;
 use Tests\TestCase;
@@ -11,6 +12,13 @@ use Tests\TestCase;
 class AnaliseCreditoTest extends TestCase
 {
     use RefreshDatabase;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        App::setLocale('pt_BR');
+    }
 
     private function payload(array $sobrescrever = []): array
     {
@@ -184,5 +192,18 @@ class AnaliseCreditoTest extends TestCase
             'id' => $analiseId,
             'status' => 'contratado',
         ]);
+    }
+
+    public function test_responde_em_ingles_com_locale_en(): void
+    {
+        App::setLocale('en');
+        $this->fakeBureau(850);
+
+        $response = $this->postJson('/api/analise-credito', $this->payload([
+            'renda_mensal' => 1000,
+        ]));
+
+        $response->assertStatus(201)
+            ->assertJsonFragment(['motivo_rejeicao' => 'Insufficient minimum income']);
     }
 }

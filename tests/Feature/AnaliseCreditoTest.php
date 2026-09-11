@@ -2,45 +2,141 @@
 
 namespace Tests\Feature;
 
+use App\Models\AnaliseCredito;
+use App\Models\Cliente;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Http;
 use Tests\TestCase;
 
 class AnaliseCreditoTest extends TestCase
 {
     use RefreshDatabase;
 
-    /**
-     * Teste inicial guiado: Verifica que a rota de solicitação de análise
-     * de crédito retorna o status HTTP 501 (Not Implemented) por padrão.
-     *
-     * O candidato deve adaptar ou reescrever este teste para validar
-     * o fluxo correto após implementar a solução.
-     */
-    public function test_rota_solicitar_analise_retorna_stub_nao_implementado(): void
+    private function payload(array $sobrescrever = []): array
     {
-        $response = $this->postJson('/api/analise-credito', [
-            'cpf' => '12345678901',
+        return array_merge([
             'nome' => 'João da Silva',
-            'renda_mensal' => 3000.00,
+            'cpf' => '12345678901',
+            'renda_mensal' => 8000,
             'tipo_credito' => 'pessoal',
-            'valor_solicitado' => 5000.00,
-        ]);
-
-        $response->assertStatus(501);
+            'valor_solicitado' => 10000,
+        ], $sobrescrever);
     }
 
-    /**
-     * DICA PARA O CANDIDATO:
-     * Crie aqui testes adicionais para cobrir os fluxos de sucesso e erro:
-     *
-     * 1. Testar análise de crédito aprovada com score alto (juros de 2.9%).
-     * 2. Testar análise de crédito aprovada com score médio (juros de 4.5%).
-     * 3. Testar reprovação por renda mensal insuficiente (abaixo de R$ 1.500,00).
-     * 4. Testar reprovação por score muito baixo (abaixo de 400).
-     * 5. Testar reprovação por comprometimento de renda (parcela > 30% da renda).
-     * 6. Testar resiliência caso a API externa do Bureau retorne erro 500.
-     * 7. Testar se a rota de contratação dispara o Job `ProcessarContratacaoJob` para a fila.
-     *
-     * Lembre-se de utilizar \Illuminate\Support\Facades\Http::fake() para simular as chamadas à API do Bureau.
-     */
+    private function fakeBureau(int $score): void
+    {
+        Http::fake([
+            '*' => Http::response(['score' => $score], 200),
+        ]);
+    }
+
+    public function test_aprova_com_score_alto_taxa_reduzida(): void
+    {
+        $this->fakeBureau(850);
+
+        $response = $this->postJson('/api/analise-credito', $this->payload());
+
+        $response->assertStatus(201)
+            ->assertJsonFragment(['status' => 'aprovado'])
+            ->assertJsonFragment(['taxa_juros' => '2.90'])
+            ->assertJsonFragment(['valor_parcela' => '1123.33']);
+    }
+
+    public function test_aprova_com_score_medio_taxa_padrao(): void
+    {
+        $this->fakeBureau(550);
+
+        $response = $this->postJson('/api/analise-credito', $this->payload());
+
+        $response->assertStatus(201)
+            ->assertJsonFragment(['status' => 'aprovado'])
+            ->assertJsonFragment(['taxa_juros' => '4.50']);
+    }
+
+    public function test_reprova_por_renda_insuficiente(): void
+    {
+        $this->fakeBureau(850);
+
+        $response = $this->postJson('/api/analise-credito', $this->payload([
+            'renda_mensal' => 1000,
+        ]));
+
+        $response->assertStatus(201)
+            ->assertJsonFragment(['status' => 'reprovado'])
+            ->assertJsonFragment(['motivo_rejeicao' => 'Renda mínima insuficiente']);
+    }
+
+    public function test_reprova_por_score_baixo(): void
+    {
+        $this->fakeBureau(150);
+
+        $response = $this->postJson('/api/analise-credito', $this->payload());
+
+        $response->assertStatus(201)
+            ->assertJsonFragment(['status' => 'reprovado'])
+            ->assertJsonFragment(['motivo_rejeicao' => 'Score de crédito muito baixo']);
+    }
+
+    public function test_reprova_por_comprometimento_de_renda(): void
+    {
+        $this->fakeBureau(850);
+
+        $response = $this->postJson('/api/analise-credito', $this->payload([
+            'renda_mensal' => 3000,
+            'valor_solicitado' => 20000,
+        ]));
+
+        $response->assertStatus(201)
+            ->assertJsonFragment(['status' => 'reprovado']);
+
+        $this->assertStringStartsWith(
+            'Comprometimento de renda superior a',
+            $response->json('motivo_rejeicao')
+        );
+    }
+
+    public function test_responde_sem_crash_quando_bureau_falha(): void
+    {
+        Http::fake([
+            '*' => Http::response(['error' => 'Erro interno'], 500),
+        ]);
+
+        $response = $this->postJson('/api/analise-credito', $this->payload());
+
+        $response->assertStatus(503)
+            ->assertJsonFragment(['message' => 'Serviço de análise indisponível no momento. Tente novamente.']);
+    }
+
+    public function test_contrata_analise_aprovada(): void
+    {
+        $this->fakeBureau(850);
+
+        $analiseId = $this->postJson('/api/analise-credito', $this->payload())->json('id');
+
+        $response = $this->postJson("/api/analise-credito/{$analiseId}/contratar");
+
+        $response->assertStatus(200)
+            ->assertJsonFragment(['status' => 'contratado']);
+
+        $this->assertDatabaseHas('analises_credito', [
+            'id' => $analiseId,
+            'status' => 'contratado',
+        ]);
+    }
+
+    public function test_cria_cliente_automaticamente_com_cpf_novo(): void
+    {
+        $this->fakeBureau(850);
+
+        $this->assertDatabaseMissing('clientes', ['cpf' => '98765432109']);
+
+        $response = $this->postJson('/api/analise-credito', $this->payload([
+            'cpf' => '98765432109',
+        ]));
+
+        $response->assertStatus(201);
+
+        $this->assertDatabaseHas('clientes', ['cpf' => '98765432109']);
+        $this->assertNotNull($response->json('cliente_id'));
+    }
 }
